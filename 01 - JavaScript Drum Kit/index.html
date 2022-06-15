@@ -69,7 +69,6 @@
       keyCode = ev.keyCode;
       audio = document.querySelector(`audio[data-key="${keyCode}"`);
     }
-    console.log(ev, audio, ev.type);
     if (!audio) return;
     audio.currentTime = 0;
     audio.play();
@@ -84,7 +83,6 @@
 
   const keys = document.querySelectorAll('.key');
   keys.forEach((key) => {
-    console.log(key.attributes.getNamedItem("data-key").value);
     key.addEventListener("transitionend", func);
     key.addEventListener("click", playSound);
   })
