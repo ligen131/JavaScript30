@@ -73,17 +73,37 @@
     const HourHand = document.querySelector('.hour-hand');
     const MinHand = document.querySelector('.min-hand');
     const SecondHand = document.querySelector('.second-hand');
-    function Clock() {
-      var now = new Date();
-      var s = now.getSeconds();
-      var m = now.getMinutes();
-      var h = now.getHours();
-      HourHand.style.transform = `rotate(${(h % 12) * (360 / 12) + m * (360 / 12 / 60) + s * (360 / 12 / 60 / 60) + 90}deg)`;
-      MinHand.style.transform = `rotate(${m * (360 / 60) + s * (360 / 60 / 60) + 90}deg)`;
-      SecondHand.style.transform = `rotate(${s * (360 / 60) + 90}deg)`;
+    var baseTime = 0;
+    var sRotated = 90, mRotated = 90, hRotated = 90;
+    async function syncClock() {
+      const now = new Date();
+      baseTime = Math.floor(now.getTime() / 1000);
+      const s = now.getSeconds();
+      const m = now.getMinutes();
+      const h = now.getHours();
+      hRotated = (h % 12) * (360 / 12) + m * (360 / 12 / 60) + s * (360 / 12 / 60 / 60) + 90;
+      mRotated = m * (360 / 60) + s * (360 / 60 / 60) + 90;
+      sRotated = s * (360 / 60) + 90;
+      HourHand.style.transform = `rotate(${hRotated}deg)`;
+      MinHand.style.transform = `rotate(${mRotated}deg)`;
+      SecondHand.style.transform = `rotate(${sRotated}deg)`;
     }
-
-    setInterval(Clock, 1000);
+    function clock() {
+      const now = Math.floor(new Date().getTime() / 1000);
+      const delta = now - baseTime;
+      const h = hRotated + delta * (360 / 12 / 60 / 60);
+      const m = mRotated + delta * (360 / 60 / 60);
+      const s = sRotated + delta * (360 / 60);
+      console.log(h, m, s, delta, baseTime);
+      HourHand.style.transform = `rotate(${h}deg)`;
+      MinHand.style.transform = `rotate(${m}deg)`;
+      SecondHand.style.transform = `rotate(${s}deg)`;
+    }
+    async function init() {
+      await syncClock();
+      setInterval(clock, 1000);
+    }
+    init();
 
   </script>
 </body>
