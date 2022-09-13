@@ -18,13 +18,19 @@
     <input id="base" type="color" name="base" value="#ffc600">
   </div>
 
-  <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500">
+  <img src="photo-1465188162913-8fb5709d6d57.jfif">
 
   <style>
 
     /*
       misc styles, nothing to do with CSS variables
     */
+
+    :root {
+      --spacing: 10px;
+      --blur: 10px;
+      --base: #ffc600;
+    }
 
     body {
       text-align: center;
@@ -42,9 +48,48 @@
     input {
       width: 100px;
     }
+
+    img {
+      border-style: solid;
+      border-width: var(--spacing);
+      border-color: var(--base);
+      filter: blur(var(--blur));
+    }
+
+    .hl {
+      color: var(--base);
+    }
   </style>
 
   <script>
+
+    // const spacing = document.querySelector('#spacing');
+    // const elementBlur = document.querySelector('#blur');
+    // const base = document.querySelector('#base');
+    // const hlJS = document.querySelector('.hl');
+    // const img = document.querySelector('img');
+    // spacing.addEventListener("input", function(e) {
+    //   const value = e.srcElement.value;
+    //   img.style.borderWidth = `${value}px`;
+    // });
+    // elementBlur.addEventListener("input", function(e) {
+    //   const value = e.srcElement.value;
+    //   img.style.filter = `blur(${value}px)`;
+    // });
+    // base.addEventListener("input", function(e) {
+    //   const value = e.srcElement.value;
+    //   img.style.borderColor = value;
+    //   hlJS.style.color = value;
+    // });
+
+    function handleUpdate() {
+      const suffix = this.dataset.sizing || '';
+      document.documentElement.style.setProperty(`--${this.name}`, `${this.value}${suffix}`);
+    }
+
+    const inputs = document.querySelectorAll('.controls input');
+    inputs.forEach((input) => input.addEventListener("input", handleUpdate));
+
   </script>
 
 </body>
