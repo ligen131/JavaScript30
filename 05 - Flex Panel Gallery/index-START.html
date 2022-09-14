@@ -24,14 +24,19 @@
     }
 
     .panels {
+      display: flex;
       min-height: 100vh;
       overflow: hidden;
     }
-
+    /* flex tutorial: https://blog.csdn.net/weixin_26712121/article/details/108925005 */
     .panel {
       background: #6B0F9C;
-      box-shadow: inset 0 0 0 5px rgba(255,255,255,0.1);
+      box-shadow: inset 0 0 0 5px rgba(255, 255, 255, 0.1);
       color: white;
+      display: flex;
+      flex: 1;
+      justify-content: center;
+      flex-direction: column;
       text-align: center;
       align-items: center;
       /* Safari transitionend event.propertyName === flex */
@@ -45,14 +50,19 @@
       background-position: center;
     }
 
-    .panel1 { background-image:url(https://source.unsplash.com/gYl-UtwNg_I/1500x1500); }
-    .panel2 { background-image:url(https://source.unsplash.com/rFKUFzjPYiQ/1500x1500); }
-    .panel3 { background-image:url(https://images.unsplash.com/photo-1465188162913-8fb5709d6d57?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&cs=tinysrgb&w=1500&h=1500&fit=crop&s=967e8a713a4e395260793fc8c802901d); }
-    .panel4 { background-image:url(https://source.unsplash.com/ITjiVXcwVng/1500x1500); }
-    .panel5 { background-image:url(https://source.unsplash.com/3MNzGlQM7qs/1500x1500); }
+    .panel1 { background-image:url(img/photo-1443891238287-325a8fddd0f7.jfif); }
+    .panel2 { background-image:url(img/flashlight.jpg); }
+    .panel3 { background-image:url(img/photo-1465188162913-8fb5709d6d57.jfif); }
+    .panel4 { background-image:url(img/photo-1442522772768-9032b6d10e3e.jfif); }
+    .panel5 { background-image:url(img/photo-1465156799763-2c087c332922.jfif); }
 
     /* Flex Children */
     .panel > * {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      justify-content: center;
+      /* border: red solid 2px; */
       margin: 0;
       width: 100%;
       transition: transform 0.5s;
@@ -69,8 +79,21 @@
       font-size: 4em;
     }
 
+    .panel > *:first-child {
+      transform: translateY(-100%);
+    }
+
+    .panel > *:last-child {
+      transform: translateY(100%);
+    }
+
     .panel.open {
       font-size: 40px;
+      flex-grow: 3;
+    }
+
+    .panel p.active {
+      transform: translateY(0%);
     }
 
   </style>
@@ -105,6 +128,27 @@
   </div>
 
   <script>
+
+    const panels = document.querySelectorAll('.panel');
+    panels.forEach((panel) => {
+      panel.addEventListener('click', (event) => {
+        panel.classList.toggle('open');
+      });
+      panel.addEventListener('transitionend', (event) => {
+        if (!event.propertyName.includes('flex')) return;
+        let first_child = panel.querySelector('.open p:first-child'), last_child;
+        if (first_child) {
+          last_child = panel.querySelector('.open p:last-child');
+          first_child.classList.add('active');
+          last_child.classList.add('active');
+        } else {
+          first_child = panel.querySelector('p:first-child');
+          last_child = panel.querySelector('p:last-child');
+          first_child.classList.remove('active');
+          last_child.classList.remove('active');
+        }
+      });
+    });
 
   </script>
 
