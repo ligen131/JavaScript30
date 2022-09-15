@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Type Ahead 👀</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <form class="search-form">
+    <input type="text" class="search" placeholder="City or State">
+    <ul class="suggestions">
+      <li>Filter for a city</li>
+      <li>or a state</li>
+    </ul>
+  </form>
+<script>
+  const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+  const input = document.querySelector('input');
+  const suggestions = document.querySelector('.suggestions');
+  let cities = [];
+  function search(event) {
+    const value = event.srcElement.value.toLowerCase();
+    const html = cities.map((city) => {
+      if (city.city.toLowerCase().includes(value) || city.state.toLowerCase().match(value)) {
+        const rep = new RegExp(value, 'ig');
+        const hl = (data) => `<span class='hl'>${data}</span>`;
+        const _city = city.city.replaceAll(rep, hl);
+        const _state = city.state.replaceAll(rep, hl);
+        return `
+        <li>
+          <span>${_city}, ${_state}</span>
+          <span class="population">${city.population}</span>
+        </li>`;
+      }
+      return '';
+    }).join('');
+    suggestions.innerHTML = html;
+  }
+  fetch(endpoint)
+    .then((data) => data.json())
+    .then((json) => cities.push(...json))
+    .then(input.addEventListener('input', search))
+</script>
+</body>
+</html>
