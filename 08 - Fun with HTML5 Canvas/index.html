@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML5 Canvas</title>
+</head>
+<body>
+<canvas id="draw" width="800" height="800"></canvas>
+<script>
+  const canvas = document.querySelector('canvas');
+  const ctx = canvas.getContext("2d");
+  function canvasResize() {
+    const canvasData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    canvas.width = window.innerWidth - 5;
+    canvas.height = window.innerHeight - 5;
+    ctx.putImageData(canvasData, 0, 0);
+  }
+  canvasResize();
+  window.onresize = canvasResize;
+  let lastX = -1, lastY = -1;
+  let mouseHold = false;
+  const MAX_LINE_WIDTH = 100;
+  let lineWidth = MAX_LINE_WIDTH, lineWidthDelta = 1;
+  let colorDegree = 0;
+  function draw(event) {
+    if (!mouseHold) return;
+    const x = event.clientX, y = event.clientY;
+    ctx.lineWidth = lineWidth;
+    if (lineWidth === 1 || lineWidth === MAX_LINE_WIDTH) lineWidthDelta = -lineWidthDelta;
+    lineWidth += lineWidthDelta;
+    if (colorDegree === 360) colorDegree = 0;
+    colorDegree++;
+    ctx.strokeStyle = `hsl(${colorDegree}, 100%, 50%)`;
+    ctx.lineCap = "round";
+    if (lastX === -1) {
+      lastX = x, lastY = y;
+    }
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    lastX = x, lastY = y;
+  }
+  canvas.addEventListener('mousedown', (event) => {
+    mouseHold = true;
+    draw(event);
+  });
+  canvas.addEventListener('mouseup', () => {
+    lastX = lastY = -1;
+    mouseHold = false;
+  });
+  canvas.addEventListener('mouseout', () => {
+    lastX = lastY = -1;
+    mouseHold = false;
+  })
+  canvas.addEventListener('mousemove', draw);
+</script>
+
+<style>
+  html, body {
+    margin: 0;
+  }
+</style>
+
+</body>
+</html>
